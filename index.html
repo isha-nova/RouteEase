@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RouteEase | Travel With Confidence</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
+
+:root {
+  --cream:#f8f3e9;
+  --white:#fffdf8;
+  --brown:#392a21;
+  --muted:#88796d;
+  --orange:#c56b46;
+  --olive:#65734c;
+  --border:#e9dfd2;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+
+nav{
+  position:sticky;top:0;z-index:10;
+  background:var(--white);
+  padding:17px 7%;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 3px 20px #392a2110;
+}
+.logo{font-size:25px;font-weight:800}
+.logo span{color:var(--orange)}
+.logo small{display:block;font-size:9px;letter-spacing:2px;color:var(--muted)}
+.navlinks{display:flex;gap:25px;align-items:center}
+.navlinks a{text-decoration:none;color:var(--brown);font-size:13px;font-weight:700}
+.navlinks a:hover{color:var(--orange)}
+
+.hero{
+  min-height:550px;padding:85px 8%;
+  display:flex;align-items:center;color:white;
+  background:
+  linear-gradient(90deg,#251b17e8,#251b1760),
+  url('https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1800&q=85')
+  center/cover;
+}
+.hero-content{max-width:680px}
+.eyebrow{font-size:11px;letter-spacing:3px;color:#efb28f;font-weight:800;margin-bottom:20px}
+.hero h1{font:700 clamp(42px,6vw,70px)/1.13 'Playfair Display',serif}
+.hero h1 span{color:#efb28f}
+.hero p{max-width:520px;color:#eee2d8;line-height:1.8;margin-top:22px}
+.btn{
+  border:0;border-radius:30px;padding:14px 23px;
+  font-weight:800;text-decoration:none;display:inline-block;
+}
+.orange{background:var(--orange);color:white}
+.dark{background:var(--brown);color:white}
+.hero .btn{margin-top:30px}
+
+.section{padding:75px 7%}
+.heading{text-align:center;margin-bottom:35px}
+.heading .eyebrow{color:var(--orange)}
+.heading h2{font:700 clamp(29px,4vw,42px) 'Playfair Display',serif}
+.heading p{color:var(--muted);margin-top:12px;line-height:1.7}
+
+.planner{
+  max-width:1050px;margin:-50px auto 0;position:relative;
+  background:var(--white);border-radius:20px;padding:32px;
+  box-shadow:0 15px 50px #392a2118;
+}
+.planner h2{font:700 27px 'Playfair Display',serif}
+.planner>p{font-size:13px;color:var(--muted);margin:8px 0 24px}
+.fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px}
+.field label{display:block;font-size:11px;font-weight:800;margin-bottom:9px}
+.field input,.field select{
+  width:100%;padding:14px;border:1px solid var(--border);
+  border-radius:9px;background:white;color:var(--brown);outline:none;
+}
+.field input:focus,.field select:focus{border-color:var(--orange)}
+.full-btn{
+  width:100%;padding:16px;margin-top:20px;border:0;
+  border-radius:10px;background:var(--orange);color:white;font-weight:800;
+}
+.full-btn:hover{background:#a95230}
+
+#journey{display:none;max-width:1050px;margin:30px auto 0}
+.journey-card{background:var(--white);border-radius:20px;padding:30px;box-shadow:0 10px 35px #392a2110}
+.journey-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.journey-top h2{font:700 28px 'Playfair Display',serif}
+.tag{background:#f2e6d9;color:#a55b3a;padding:8px 12px;border-radius:20px;font-size:10px;font-weight:800}
+
+.summary{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0;
+}
+.summary div{background:var(--cream);padding:18px;border-radius:12px}
+.summary small{display:block;color:var(--muted);margin-bottom:7px}
+.summary strong{font-size:16px}
+
+.progress-area{background:#eee6da;height:8px;border-radius:10px;margin:22px 0 8px;overflow:hidden}
+#progressBar{height:100%;width:0;background:var(--olive);transition:.3s}
+#progressText{font-size:12px;color:var(--muted)}
+
+.steps{margin-top:25px}
+.step{
+  display:flex;gap:17px;padding:20px 12px;
+  border-bottom:1px solid var(--border);
+  transition:.2s;
+}
+.step-number{
+  min-width:43px;height:43px;border-radius:50%;
+  background:#f1e3d7;display:grid;place-items:center;font-size:19px;
+}
+.step.done .step-number{background:#e2ead8}
+.step.active{background:#fbf5ec;border-radius:12px}
+.step h3{font-size:15px;margin-bottom:7px}
+.step p{font-size:13px;color:var(--muted);line-height:1.7}
+.step small{display:inline-block;color:var(--olive);font-weight:800;margin-top:8px}
+.step button{
+  display:block;margin-top:12px;padding:9px 14px;
+  border:0;border-radius:8px;background:var(--olive);
+  color:white;font-size:12px;font-weight:800;
+}
+.step.done button{background:#dfe8d5;color:#40512d}
+
+.guide-box{
+  margin-top:25px;background:#f3eadc;border-radius:14px;padding:20px;
+}
+.guide-box h3{font:700 20px 'Playfair Display',serif;margin-bottom:9px}
+.guide-box p{font-size:13px;line-height:1.7;color:#67564a}
+.guide-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
+.guide-actions button{padding:12px 16px;border:0;border-radius:9px;font-weight:800}
+#nextBtn{background:var(--orange);color:white}
+#previousBtn{background:#e6dbcb;color:var(--brown)}
+.safety-note{font-size:12px;color:var(--muted);line-height:1.7;margin-top:18px}
+
+.safety-grid,.features{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px;
+}
+.feature{
+  background:var(--white);border:1px solid var(--border);
+  padding:26px;border-radius:16px;
+  transition:.25s;
+}
+.feature:hover{transform:translateY(-5px);box-shadow:0 12px 25px #392a2110}
+.feature .icon{font-size:29px;margin-bottom:15px}
+.feature h3{font-size:16px;margin-bottom:9px}
+.feature p{font-size:13px;line-height:1.7;color:var(--muted)}
+
+.photos{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:15px}
+.photo{height:270px;position:relative;border-radius:15px;overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover;transition:.4s}
+.photo:hover img{transform:scale(1.07)}
+.photo span{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:35px 18px 18px;color:white;
+  font:700 22px 'Playfair Display',serif;
+  background:linear-gradient(transparent,#21170ddd);
+}
+
+.saved-box{max-width:850px;margin:auto;background:var(--white);padding:25px;border-radius:16px}
+.saved-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:15px 0;border-bottom:1px solid var(--border)}
+.saved-item small{display:block;color:var(--muted);margin-top:5px}
+.saved-item button{border:0;padding:9px 12px;border-radius:8px;background:#f3e4da;color:#9d5036;font-weight:700}
+.empty{color:var(--muted);font-size:13px}
+
+.safety-panel{
+  background:#e9eddf;border:1px solid #dce3d0;
+  padding:25px;border-radius:16px;max-width:850px;margin:auto;
+}
+.safety-panel h3{margin-bottom:10px}
+.safety-panel p{font-size:13px;line-height:1.7;color:#596349}
+.safety-buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:17px}
+.safety-buttons a,.safety-buttons button{
+  padding:12px 16px;border-radius:9px;border:0;
+  background:var(--olive);color:white;text-decoration:none;font-weight:800;font-size:12px;
+}
+.safety-buttons button{background:var(--brown)}
+
+footer{background:var(--brown);color:white;text-align:center;padding:45px 7%}
+footer p{color:#d6c8ba;font-size:13px;margin-top:10px}
+footer small{display:block;color:#a99b8f;margin-top:22px}
+
+@media(max-width:750px){
+  .navlinks{gap:10px}
+  .navlinks a:not(:last-child){display:none}
+  .fields,.features,.safety-grid{grid-template-columns:1fr 1fr}
+  .photos{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  nav{padding:15px 5%}
+  .hero{padding:65px 6%;min-height:490px}
+  .section{padding:60px 6%}
+  .planner{padding:22px}
+  .fields,.features,.safety-grid,.photos,.summary{grid-template-columns:1fr}
+  .journey-card{padding:20px}
+  .photo{height:230px}
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="logo">Route<span>Ease.</span>
+    <small>YOUR JOURNEY, SIMPLIFIED</small>
+  </div>
+  <div class="navlinks">
+    <a href="#home">Home</a>
+    <a href="#features">Features</a>
+    <a href="#safety">Safety</a>
+    <a href="#saved">Saved</a>
+    <a href="#planner">Plan Journey ↗</a>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="eyebrow">TRAVEL SMARTER. FEEL SAFER.</div>
+    <h1>Your journey.<br>Your comfort.<br><span>Your confidence.</span></h1>
+    <p>
+      Travelling somewhere new can feel confusing.
+      RouteEase helps you understand your journey,
+      follow each connection and travel with confidence.
+    </p>
+    <a class="btn orange" href="#planner">Start your journey →</a>
+  </div>
+</section>
+
+<section id="planner" style="padding:0 7%">
+  <div class="planner">
+    <h2>Let's plan your journey.</h2>
+    <p>Enter your locations and let RouteEase organise your travel steps.</p>
+
+    <form id="routeForm">
+      <div class="fields">
+        <div class="field">
+          <label>STARTING CITY</label>
+          <input id="from" value="Greater Noida" required>
+        </div>
+        <div class="field">
+          <label>DESTINATION CITY</label>
+          <input id="to" value="Meerut" required>
+        </div>
+        <div class="field">
+          <label>MEERUT DESTINATION STATION</label>
+          <select id="station">
+            <option>Meerut South</option>
+            <option>Shatabdi Nagar</option>
+            <option>Meerut Central</option>
+            <option>Begumpul</option>
+            <option>Modipuram</option>
+          </select>
+        </div>
+      </div>
+      <button class="full-btn" type="submit">Plan My Journey →</button>
+    </form>
+  </div>
+</section>
+
+<section id="journey">
+  <div class="journey-card">
+    <div class="journey-top">
+      <h2>Your personal travel guide</h2>
+      <span class="tag">GUIDED JOURNEY</span>
+    </div>
+
+    <div class="summary">
+      <div><small>FROM</small><strong id="showFrom"></strong></div>
+      <div><small>TO</small><strong id="showTo"></strong></div>
+    </div>
+
+    <div class="progress-area"><div id="progressBar"></div></div>
+    <p id="progressText">0 of 5 steps completed</p>
+
+    <div class="steps" id="steps"></div>
+
+    <div class="guide-box">
+      <h3 id="guideTitle">Your next step</h3>
+      <p id="guideText">Start your journey to see your instructions.</p>
+      <div class="guide-actions">
+        <button id="previousBtn" type="button">← Previous</button>
+        <button id="nextBtn" type="button">Next step →</button>
+      </div>
+    </div>
+
+    <div class="safety-note">
+      Important: This is a guided sample itinerary, not a live navigation system.
+      Confirm train directions, station changes, platform details and service
+      availability using official transport information before boarding.
+    </div>
+    <button class="full-btn" id="saveBtn" type="button">♡ Save this journey</button>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="heading">
+    <div class="eyebrow">WHY ROUTEEASE?</div>
+    <h2>More than just directions.</h2>
+    <p>Travel information organised to make every journey easier.</p>
+  </div>
+
+  <div class="features">
+    <div class="feature">
+      <div class="icon">🧭</div>
+      <h3>Step-by-step guidance</h3>
+      <p>Understand each part of your journey, from the first station to the final destination.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🚆</div>
+      <h3>Interchange guidance</h3>
+      <p>Know where to leave one transport service and where to find the next connection.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">📍</div>
+      <h3>Location awareness</h3>
+      <p>Future-ready design for location-based journey assistance with user permission.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">♡</div>
+      <h3>Saved journeys</h3>
+      <p>Keep frequently used journeys saved in your browser for easy access.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🛡️</div>
+      <h3>Travel safety</h3>
+      <p>Keep emergency information and trusted-contact options easy to find.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🌿</div>
+      <h3>Simple experience</h3>
+      <p>A calm, clean interface that makes travel instructions easier to understand.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="safety">
+  <div class="heading">
+    <div class="eyebrow">YOUR COMFORT MATTERS</div>
+    <h2>Travel with confidence.</h2>
+    <p>A little preparation can make an unfamiliar journey feel easier.</p>
+  </div>
+
+  <div class="safety-panel">
+    <h3>Travel safety centre 🛡️</h3>
+    <p>
+      Keep your phone charged, check your route before leaving,
+      stay in public passenger areas and let a trusted person know
+      about your journey. If you need urgent assistance in India,
+      call the national emergency number 112.
+    </p>
+    <div class="safety-buttons">
+      <a href="tel:112">Emergency help · 112</a>
+      <button id="shareBtn" type="button">Share journey ↗</button>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="heading">
+    <div class="eyebrow">ENJOY THE JOURNEY</div>
+    <h2>Every trip has a story.</h2>
+  </div>
+  <div class="photos">
+    <div class="photo">
+      <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=900&q=85" alt="Bus journey">
+      <span>Road Journeys</span>
+    </div>
+    <div class="photo">
+      <img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=900&q=85" alt="Railway journey">
+      <span>Train Travel</span>
+    </div>
+    <div class="photo">
+      <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85" alt="Travel destination">
+      <span>New Places</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="saved">
+  <div class="heading">
+    <div class="eyebrow">YOUR TRAVEL LIST</div>
+    <h2>Saved journeys.</h2>
+  </div>
+  <div class="saved-box">
+    <div id="savedList"><p class="empty">No saved journeys yet.</p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">Route<span>Ease.</span></div>
+  <p>Less confusion. More confidence.</p>
+  <p>Your journey, simplified.</p>
+  <small>© 2026 RouteEase | Student Web Development Project</small>
+</footer>
+
+<script>
+const routeSteps = [
+  {
+    icon:"🚉",
+    title:"Reach the nearest Aqua Line station",
+    description:"From Greater Noida, reach your nearest convenient Aqua Line station. Knowledge Park II, Pari Chowk and other stations are on the operational Aqua Line. Choose the station that is convenient for your actual starting location.",
+    tip:"Check the station entrance and train direction before boarding."
+  },
+  {
+    icon:"🚇",
+    title:"Travel towards Noida Sector 51",
+    description:"Board the Aqua Line train in the direction of Noida Sector 51. Get off at Noida Sector 51, the terminal station.",
+    tip:"Check the destination displayed on the train before boarding."
+  },
+  {
+    icon:"🚶",
+    title:"Transfer from Sector 51 to Sector 52",
+    description:"Exit the Aqua Line station and follow the signed pedestrian connection towards Noida Sector 52 on the Delhi Metro Blue Line. These are separate stations and ticket systems.",
+    tip:"Allow time for the transfer and follow official station signs."
+  },
+  {
+    icon:"🚇",
+    title:"Take the Blue Line to New Ashok Nagar",
+    description:"At Noida Sector 52, take the Blue Line train towards Dwarka Sector 21 and get off at New Ashok Nagar. Check the train display before boarding.",
+    tip:"New Ashok Nagar is the transfer point for the Namo Bharat station."
+  },
+  {
+    icon:"🚄",
+    title:"Board Namo Bharat towards Meerut",
+    description:"Follow the interchange signs to New Ashok Nagar Namo Bharat station. Take a train towards Meerut and get off at your selected Meerut station.",
+    tip:"Confirm the train destination and stopping pattern on the official NCRTC information before boarding."
+  }
+];
+
+let currentStep = 0;
+let completed = [];
+let currentJourney = null;
+
+const routeForm = document.getElementById("routeForm");
+const journey = document.getElementById("journey");
+
+routeForm.addEventListener("submit", function(event){
+  event.preventDefault();
+
+  const from = document.getElementById("from").value.trim();
+  const to = document.getElementById("to").value.trim();
+  const station = document.getElementById("station").value;
+
+  if(!from || !to){
+    alert("Please enter both locations.");
+    return;
+  }
+
+  currentJourney = {from,to,station};
+  currentStep = 0;
+  completed = [];
+
+  document.getElementById("showFrom").textContent = from;
+  document.getElementById("showTo").textContent = to + " · " + station;
+
+  renderJourney();
+  journey.style.display = "block";
+  journey.scrollIntoView({behavior:"smooth"});
+});
+
+function renderJourney(){
+  const container = document.getElementById("steps");
+  container.innerHTML = "";
+
+  routeSteps.forEach(function(step,index){
+    const item = document.createElement("div");
+    item.className = "step";
+
+    if(completed.includes(index)) item.classList.add("done");
+    if(index === currentStep) item.classList.add("active");
+
+    const number = document.createElement("div");
+    number.className = "step-number";
+    number.textContent = completed.includes(index) ? "✓" : step.icon;
+
+    const content = document.createElement("div");
+    const heading = document.createElement("h3");
+    heading.textContent = (index+1) + ". " + step.title;
+
+    const description = document.createElement("p");
+    description.textContent = step.description;
+
+    const tip = document.createElement("small");
+    tip.textContent = "TIP: " + step.tip;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = completed.includes(index) ? "Completed ✓" : "Mark as completed";
+    button.addEventListener("click",function(){
+      if(!completed.includes(index)) completed.push(index);
+      if(index < routeSteps.length-1) currentStep = index+1;
+      updateGuide();
+    });
+
+    content.appendChild(heading);
+    content.appendChild(description);
+    content.appendChild(tip);
+    content.appendChild(button);
+
+    item.appendChild(number);
+    item.appendChild(content);
+    container.appendChild(item);
+  });
+
+  updateGuide();
+}
+
+function updateGuide(){
+  const step = routeSteps[currentStep];
+
+  document.getElementById("guideTitle").textContent =
+    currentStep === routeSteps.length-1 ? "Final travel step" : "Your next step: " + step.title;
+
+  document.getElementById("guideText").textContent =
+    step.description + " " + step.tip;
+
+  const percent = Math.round(completed.length/routeSteps.length*100);
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("progressText").textContent =
+    completed.length + " of " + routeSteps.length + " steps completed";
+
+  document.getElementById("previousBtn").disabled = currentStep === 0;
+  document.getElementById("nextBtn").textContent =
+    currentStep === routeSteps.length-1 ? "Finish journey ✓" : "Next step →";
+
+  renderStepHighlight();
+}
+
+function renderStepHighlight(){
+  document.querySelectorAll(".step").forEach(function(item,index){
+    item.classList.toggle("active",index===currentStep);
+    item.classList.toggle("done",completed.includes(index));
+    item.querySelector(".step-number").textContent =
+      completed.includes(index) ? "✓" : routeSteps[index].icon;
+  });
+}
+
+document.getElementById("nextBtn").addEventListener("click",function(){
+  if(currentStep < routeSteps.length-1){
+    completed.push(currentStep);
+    currentStep++;
+    renderJourney();
+  }else{
+    completed.push(currentStep);
+    renderJourney();
+    alert("You've reached the end of this sample journey guide. Have a safe trip!");
+  }
+});
+
+document.getElementById("previousBtn").addEventListener("click",function(){
+  if(currentStep>0){
+    currentStep--;
+    renderJourney();
+  }
+});
+
+document.getElementById("saveBtn").addEventListener("click",function(){
+  if(!currentJourney) return;
+
+  let saved = JSON.parse(localStorage.getItem("routeEaseSaved") || "[]");
+
+  const exists = saved.some(function(item){
+    return item.from===currentJourney.from &&
+           item.to===currentJourney.to &&
+           item.station===currentJourney.station;
+  });
+
+  if(exists){
+    alert("This journey is already saved!");
+    return;
+  }
+
+  saved.push(currentJourney);
+  localStorage.setItem("routeEaseSaved",JSON.stringify(saved));
+  showSaved();
+  alert("Journey saved successfully!");
+});
+
+function showSaved(){
+  const list = document.getElementById("savedList");
+  const saved = JSON.parse(localStorage.getItem("routeEaseSaved") || "[]");
+  list.innerHTML = "";
+
+  if(saved.length===0){
+    const p = document.createElement("p");
+    p.className="empty";
+    p.textContent="No saved journeys yet.";
+    list.appendChild(p);
+    return;
+  }
+
+  saved.forEach(function(item,index){
+    const row=document.createElement("div");
+    row.className="saved-item";
+
+    const details=document.createElement("div");
+    const title=document.createElement("strong");
+    title.textContent=item.from+" → "+item.to;
+
+    const sub=document.createElement("small");
+    sub.textContent="Destination station: "+item.station;
+
+    details.appendChild(title);
+    details.appendChild(sub);
+
+    const remove=document.createElement("button");
+    remove.textContent="Remove";
+    remove.addEventListener("click",function(){
+      let updated=JSON.parse(localStorage.getItem("routeEaseSaved")||"[]");
+      updated.splice(index,1);
+      localStorage.setItem("routeEaseSaved",JSON.stringify(updated));
+      showSaved();
+    });
+
+    row.appendChild(details);
+    row.appendChild(remove);
+    list.appendChild(row);
+  });
+}
+
+document.getElementById("shareBtn").addEventListener("click",async function(){
+  const from=currentJourney ? currentJourney.from : "Greater Noida";
+  const to=currentJourney ? currentJourney.to : "Meerut";
+
+  const message="My planned journey: "+from+" to "+to+". I am using RouteEase to organise my travel.";
+
+  if(navigator.share){
+    try{
+      await navigator.share({title:"My RouteEase Journey",text:message});
+    }catch(error){}
+  }else if(navigator.clipboard){
+    try{
+      await navigator.clipboard.writeText(message);
+      alert("Journey details copied. You can share them with a trusted contact.");
+    }catch(error){
+      alert(message);
+    }
+  }else{
+    alert(message);
+  }
+});
+
+showSaved();
+</script>
+
+</body>
+</html>
